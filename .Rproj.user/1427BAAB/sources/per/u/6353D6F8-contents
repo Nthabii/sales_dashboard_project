@@ -1,0 +1,236 @@
+# Install only once if not already installed
+install.packages("shiny")
+install.packages("shinydashboard")
+install.packages("readr")
+install.packages("dplyr")
+install.packages("ggplot2")
+
+#Load necessary libraries
+library(shiny)
+library(shinydashboard)
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+setwd("C:/Users/bida21-084/OneDrive - Botswana Accountancy College/Desktop/YEAR 4/PRODUCT DEVELOPMENT/sales_dashboard_project")
+
+# Load dataset
+df <- read.csv("final_cleaned_dataset.csv")
+
+# UI
+ui <- dashboardPage(dashboardHeader(title = "Sales Dashboard"), dashboardSidebar(sidebarMenu( menuItem("Upload & Overview", tabName = "upload", icon = icon("upload")),menuItem("Visuals", tabName = "visuals", icon = icon("chart-bar")))),
+dashboardBody(tabItems(
+
+# Upload Tab
+tabItem(tabName = "upload",fluidRow(box(
+                  title = "Upload CSV File", width = 6, status = "primary", solidHeader = TRUE,
+                  fileInput("file", "Choose CSV File", accept = ".csv"),
+                  helpText("Upload your dataset (e.g., ai_solutions_dataset_2000_online_only.csv)")
+                ),
+                box(
+                  title = "Data Preview", width = 6, status = "info", solidHeader = TRUE,
+                  tableOutput("preview")
+                )
+              ),
+              fluidRow(
+                box(
+                  title = "Data Summary", width = 12, status = "info", solidHeader = TRUE,
+                  verbatimTextOutput("summary")
+                )
+              )
+      ),
+      
+      # Visuals Tab
+      tabItem(tabName = "visuals",
+              fluidRow(
+                box(
+                  title = "Total Revenue by Product", width = 6, status = "success", solidHeader = TRUE,
+                  plotOutput("revenuePlot")
+                ),
+                box(
+                  title = "Sales by Country", width = 6, status = "warning", solidHeader = TRUE,
+                  plotOutput("countryPlot")
+                )
+              )
+      )
+    )
+  )
+)
+
+# Server
+server <- function(input, output) {
+  
+  # Reactive expression to read uploaded file
+  data <- reactive({
+    req(input$file)
+    read.csv(input$file$datapath)
+  })
+  
+  # Show preview
+  output$preview <- renderTable({
+    head(data())
+  })
+  
+  # Show summary
+  output$summary <- renderPrint({
+    str(data())
+  })
+  
+  # Revenue Plot
+  output$revenuePlot <- renderPlot({
+    df <- data()
+    req("Product_Name" %in% colnames(df), "Total_Revenue" %in% colnames(df))
+    df %>%
+      group_by(Product_Name) %>%
+      summarise(TotalRevenue = sum(Total_Revenue, na.rm = TRUE)) %>%
+      top_n(10, TotalRevenue) %>%
+      ggplot(aes(x = reorder(Product_Name, TotalRevenue), y = TotalRevenue, fill = Product_Name)) +
+      geom_col(show.legend = FALSE) +
+      coord_flip() +
+      labs(title = "Top 10 Products by Revenue", x = "Product", y = "Revenue")
+  })
+  
+  # Sales by Country
+  output$countryPlot <- renderPlot({
+    df <- data()
+    req("Country" %in% colnames(df), "Quantity_Sold" %in% colnames(df))
+    df %>%
+      group_by(Country) %>%
+      summarise(UnitsSold = sum(Quantity_Sold, na.rm = TRUE)) %>%
+      top_n(10, UnitsSold) %>%
+      ggplot(aes(x = reorder(Country, UnitsSold), y = UnitsSold, fill = Country)) +
+      geom_col(show.legend = FALSE) +
+      coord_flip() +
+      labs(title = "Top 10 Countries by Quantity Sold", x = "Country", y = "Quantity Sold")
+  })
+}
+
+# Run the app
+shinyApp(ui, server)
+
+df$Role <- ifelse(df$Team_Member %in% c("Daniel Robinson", "James Smith"), 
+                  "Sales Manager", 
+                  "Sales Rep")
+selectInput("role", "Select Role", 
+            choices = c("All", "Sales Manager", "Sales Rep"), 
+            selected = "All")
+server <- function(input, output) {
+  
+  filtered_data <- reactive({
+    if (input$role == "All") {
+      df
+    } else {
+      df %>% filter(Role == input$role)
+    }
+  })
+  
+  output$preview <- renderTable({
+    head(filtered_data())
+  })
+  
+  output$summary <- renderPrint({
+    summary(filtered_data())
+  })
+  
+  output$revenuePlot <- renderPlot({
+    ggplot(filtered_data(), aes(x = Product_Name, y = Total_Revenue)) +
+      geom_bar(stat = "summary", fun = sum, fill = "steelblue") +
+      theme_minimal() +
+      labs(title = "Total Revenue by Product", x = "Product", y = "Revenue")
+  })
+  
+  output$countryPlot <- renderPlot({
+    ggplot(filtered_data(), aes(x = Country)) +
+      geom_bar(fill = "darkgreen") +
+      theme_minimal() +
+      labs(title = "Sales by Country", x = "Country", y = "Count")
+  })
+}
+
+
+dashboardSidebar(
+  selectInput("role", "Select Role", 
+              choices = c("All", "Sales Manager", "Sales Rep"), 
+              selected = "All"),
+  sidebarMenu(
+    menuItem("Overview", tabName = "overview", icon = icon("dashboard")),
+    menuItem("KPIs", tabName = "kpis", icon = icon("chart-line")),
+    menuItem("Customer Metrics", tabName = "customer", icon = icon("users")),
+    menuItem("Regional Sales", tabName = "region", icon = icon("globe"))
+  )
+)
+
+tabItems(
+  # Overview tab
+  tabItem(tabName = "overview",
+          fluidRow(
+            box(title = "Preview", tableOutput("preview"), width = 6),
+            box(title = "Summary", verbatimTextOutput("summary"), width = 6)
+          )
+  ),
+  
+  # KPIs tab
+  tabItem(tabName = "kpis",
+          fluidRow(
+            box(title = "Top-Selling Products", plotOutput("topProducts"), width = 6),
+            box(title = "Profit Margin per Product", plotOutput("profitMargin"), width = 6)
+          )
+  ),
+  
+  # Customer tab
+  tabItem(tabName = "customer",
+          fluidRow(
+            box(title = "Customer Satisfaction (CSAT)", plotOutput("csatPlot"), width = 6),
+            box(title = "Net Promoter Score (NPS)", plotOutput("npsPlot"), width = 6)
+          )
+  ),
+  
+  # Region tab
+  tabItem(tabName = "region",
+          fluidRow(
+            box(title = "Sales by Region", plotOutput("regionPlot"), width = 6),
+            box(title = "Purchase Frequency", plotOutput("frequencyPlot"), width = 6)
+          )
+  )
+)
+
+output$topProducts <- renderPlot({
+  ggplot(filtered_data(), aes(x = reorder(Product_Name, Total_Revenue), y = Total_Revenue)) +
+    geom_bar(stat = "summary", fun = sum, fill = "tomato") +
+    coord_flip() +
+    labs(title = "Top-Selling Products", x = "Product", y = "Revenue")
+})
+
+output$profitMargin <- renderPlot({
+  ggplot(filtered_data(), aes(x = Product_Name, y = Profit / Total_Revenue)) +
+    geom_col(fill = "darkblue") +
+    labs(title = "Profit Margin by Product", x = "Product", y = "Profit Margin") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+})
+
+output$csatPlot <- renderPlot({
+  ggplot(filtered_data(), aes(x = CSAT)) +
+    geom_histogram(bins = 20, fill = "seagreen") +
+    labs(title = "Customer Satisfaction (CSAT)", x = "CSAT Score", y = "Count")
+})
+
+output$npsPlot <- renderPlot({
+  ggplot(filtered_data(), aes(x = NPS)) +
+    geom_histogram(bins = 20, fill = "orange") +
+    labs(title = "Net Promoter Score (NPS)", x = "NPS Score", y = "Count")
+})
+
+output$regionPlot <- renderPlot({
+  ggplot(filtered_data(), aes(x = Region)) +
+    geom_bar(fill = "steelblue") +
+    labs(title = "Sales by Region", x = "Region", y = "Count")
+})
+
+output$frequencyPlot <- renderPlot({
+  ggplot(filtered_data(), aes(x = Purchase_Frequency)) +
+    geom_histogram(bins = 10, fill = "purple") +
+    labs(title = "Customer Purchase Frequency", x = "Frequency", y = "Count")
+})
+shinyApp(ui = ui, server = server)
+
+

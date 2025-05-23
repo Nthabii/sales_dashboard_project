@@ -1,0 +1,122 @@
+
+
+# Install only once if not already installed
+install.packages("shiny")
+install.packages("shinydashboard")
+install.packages("readr")
+install.packages("dplyr")
+install.packages("ggplot2")
+
+# Load necessary libraries
+library(shiny)
+library(shinydashboard)
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+setwd("C:/Users/bida21-084/OneDrive - Botswana Accountancy College/Desktop/YEAR 4/PRODUCT DEVELOPMENT/sales_dashboard_project")
+
+# Load dataset
+df <- read.csv("final_cleaned_dataset.csv")
+
+
+# UI
+ui <- dashboardPage(
+  dashboardHeader(title = "Sales Dashboard"),
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Upload & Overview", tabName = "upload", icon = icon("upload")),
+      menuItem("Visuals", tabName = "visuals", icon = icon("chart-bar"))
+    )
+  ),
+  dashboardBody(
+    tabItems(
+      # Upload Tab
+      tabItem(tabName = "upload",
+              fluidRow(
+                box(
+                  title = "Upload CSV File", width = 6, status = "primary", solidHeader = TRUE,
+                  fileInput("file", "Choose CSV File", accept = ".csv"),
+                  helpText("Upload your dataset (e.g., ai_solutions_dataset_2000_online_only.csv)")
+                ),
+                box(
+                  title = "Data Preview", width = 6, status = "info", solidHeader = TRUE,
+                  tableOutput("preview")
+                )
+              ),
+              fluidRow(
+                box(
+                  title = "Data Summary", width = 12, status = "info", solidHeader = TRUE,
+                  verbatimTextOutput("summary")
+                )
+              )
+      ),
+      
+      # Visuals Tab
+      tabItem(tabName = "visuals",
+              fluidRow(
+                box(
+                  title = "Total Revenue by Product", width = 6, status = "success", solidHeader = TRUE,
+                  plotOutput("revenuePlot")
+                ),
+                box(
+                  title = "Sales by Country", width = 6, status = "warning", solidHeader = TRUE,
+                  plotOutput("countryPlot")
+                )
+              )
+      )
+    )
+  )
+)
+
+# Server
+server <- function(input, output) {
+  
+  # Reactive expression to read uploaded file
+  data <- reactive({
+    req(input$file)
+    read.csv(input$file$datapath)
+  })
+  
+  # Show preview
+  output$preview <- renderTable({
+    head(data())
+  })
+  
+  # Show summary
+  output$summary <- renderPrint({
+    str(data())
+  })
+  
+  # Revenue Plot
+  output$revenuePlot <- renderPlot({
+    df <- data()
+    req("Product_Name" %in% colnames(df), "Total_Revenue" %in% colnames(df))
+    df %>%
+      group_by(Product_Name) %>%
+      summarise(TotalRevenue = sum(Total_Revenue, na.rm = TRUE)) %>%
+      top_n(10, TotalRevenue) %>%
+      ggplot(aes(x = reorder(Product_Name, TotalRevenue), y = TotalRevenue, fill = Product_Name)) +
+      geom_col(show.legend = FALSE) +
+      coord_flip() +
+      labs(title = "Top 10 Products by Revenue", x = "Product", y = "Revenue")
+  })
+  
+  # Sales by Country
+  output$countryPlot <- renderPlot({
+    df <- data()
+    req("Country" %in% colnames(df), "Quantity_Sold" %in% colnames(df))
+    df %>%
+      group_by(Country) %>%
+      summarise(UnitsSold = sum(Quantity_Sold, na.rm = TRUE)) %>%
+      top_n(10, UnitsSold) %>%
+      ggplot(aes(x = reorder(Country, UnitsSold), y = UnitsSold, fill = Country)) +
+      geom_col(show.legend = FALSE) +
+      coord_flip() +
+      labs(title = "Top 10 Countries by Quantity Sold", x = "Country", y = "Quantity Sold")
+  })
+}
+
+# Run the app
+shinyApp(ui, server)
+
