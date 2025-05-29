@@ -1,4 +1,4 @@
-# test.py - Final Corrected Test Suite
+# test.py 
 import pytest
 import pandas as pd
 import tempfile
@@ -6,9 +6,7 @@ import os
 from unittest.mock import patch, MagicMock
 from datetime import datetime
 
-# ----------------------------------------------------------
-# Test Data Fixtures (Updated with Month column)
-# ----------------------------------------------------------
+
 @pytest.fixture
 def sample_data():
     """Generate test data with all required columns"""
@@ -24,7 +22,7 @@ def sample_data():
         'Sales_Channel': ['Online', 'Retail', 'Online', 'Wholesale'],
         'Country': ['USA', 'UK', 'Germany', 'Japan'],
         'Customer_ID': [1001, 1002, 1003, 1004],
-        'Month': ['January', 'January', 'February', 'February']  # Added Month column
+        'Month': ['January', 'January', 'February', 'February']  
     }
     return pd.DataFrame(data)
 
@@ -36,18 +34,16 @@ def temp_csv(sample_data):
         yield tmp.name
     os.unlink(tmp.name)
 
-# ----------------------------------------------------------
-# Data Loading Tests (Fixed)
-# ----------------------------------------------------------
+
 def test_load_data(temp_csv):
     """Test CSV data loading functionality"""
     from app import load_data
     
-    # Mock Streamlit's caching decorator
+    
     with patch('app.st.cache_data') as mock_cache:
-        mock_cache.side_effect = lambda func: func  # Bypass caching
+        mock_cache.side_effect = lambda func: func  
         
-        # Mock pd.read_csv to return our test data
+        
         with patch('pandas.read_csv', return_value=pd.read_csv(temp_csv)) as mock_read:
             df = load_data(temp_csv)
             
@@ -57,9 +53,7 @@ def test_load_data(temp_csv):
             assert 'Month' in df.columns
             assert pd.api.types.is_datetime64_any_dtype(df['Date'])
 
-# ----------------------------------------------------------
-# Authentication Tests (Working)
-# ----------------------------------------------------------
+
 def test_failed_login():
     """Test invalid login credentials"""
     from app import login_page
@@ -91,9 +85,7 @@ def test_successful_login():
         
         assert mock_state.logged_in == True
 
-# ----------------------------------------------------------
-# Visualization Tests (Fixed)
-# ----------------------------------------------------------
+
 def test_performance_gauge():
     """Test gauge chart generation"""
     from app import create_performance_gauge
@@ -108,28 +100,26 @@ def test_revenue_trend_plot(sample_data):
     """Test revenue trend visualization"""
     from app import plot_team_revenue_trend
     
-    # Convert dates and ensure Month column exists
+    
     sample_data['Date'] = pd.to_datetime(sample_data['Date'], format='%m/%d/%Y')
     sample_data['Month'] = sample_data['Date'].dt.month_name()
     
     current_year = sample_data[sample_data['Date'].dt.year == 2023]
-    last_year = pd.DataFrame(columns=sample_data.columns)  # Empty but with same structure
+    last_year = pd.DataFrame(columns=sample_data.columns)  
     
     fig = plot_team_revenue_trend(current_year, last_year, "Test Trend")
     
     assert len(fig.data) == 2
     assert fig.data[0].type == "bar"
 
-# ----------------------------------------------------------
-# Dashboard Rendering Tests (Fixed with timeout adjustment)
-# ----------------------------------------------------------
+
 def test_team_view_rendering():
     """Test team dashboard view renders correctly"""
     from streamlit.testing.v1 import AppTest
     
-    at = AppTest.from_file("app.py", default_timeout=10)  # Increased timeout
+    at = AppTest.from_file("app.py", default_timeout=10)  
     
-    # Initialize required session state - use direct assignment instead of update
+    
     at.session_state.logged_in = True
     at.session_state.view_mode = 'Team'
     if hasattr(at.session_state, 'selected_team'):
@@ -137,12 +127,10 @@ def test_team_view_rendering():
     
     at.run()
     
-    # Verify components exist without waiting for full render
+    
     assert len(at.get("st.markdown")) > 0
     assert any("TEAM PERFORMANCE" in m.value for m in at.get("st.markdown"))
 
-# ----------------------------------------------------------
-# Main Test Execution
-# ----------------------------------------------------------
+
 if __name__ == "__main__":
     pytest.main(["-v", "--cov=app", "--cov-report=html", "test.py"])

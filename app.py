@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-# Login page function
+# Login page 
 def login_page():
     st.title("🔐 AI Sales Dashboard Login")
     
@@ -15,7 +15,7 @@ def login_page():
         submitted = st.form_submit_button("Login")
         
         if submitted:
-            # Simple authentication 
+            # authentication 
             if username == "Nthabiseng Gopolang" and password == "Nthabi@2001":
                 st.session_state.logged_in = True
                 st.session_state.view_mode = "Team"  
@@ -23,7 +23,6 @@ def login_page():
             else:
                 st.error("Invalid username or password")
 
-# Custom styling for professional look with uniform metric boxes and properly spaced graphs
 def apply_custom_styles():
     st.markdown("""
     <style>
@@ -35,33 +34,33 @@ def apply_custom_styles():
             background-color: white;
         }
         
-        /* Uniform metric cards */
+        
         .metric-card {
             background: white;
             border-radius: 8px;
-            padding: 8px;  /* Further reduced padding */
+            padding: 8px;  
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             border-left: 4px solid #4e73df;
-            height: 80px;  /* Further reduced height */
-            margin-bottom: 6px;  /* Further reduced margin */
+            height: 80px; 
+            margin-bottom: 6px;  
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
         .metric-title {
-            font-size: 9px;  /* Further reduced from 10px */
+            font-size: 9px;  
             color: #5a5c69;
             font-weight: 600;
-            margin-bottom: 2px;  /* Further reduced margin */
+            margin-bottom: 2px;  
         }
         .metric-value {
-            font-size: 14px;  /* Further reduced from 16px */
+            font-size: 14px;  
             font-weight: 700;
             color: #2e59d9;
         }
         .metric-change {
-            font-size: 8px;  /* Further reduced from 9px */
-            margin-top: 2px;  /* Further reduced margin */
+            font-size: 8px;  
+            margin-top: 2px;  
         }
         .positive {
             color: #1cc88a;
@@ -70,38 +69,38 @@ def apply_custom_styles():
             color: #e74a3b;
         }
         .metric-target {
-            font-size: 8px;  /* Further reduced from 9px */
-            margin-top: 2px;  /* Further reduced margin */
+            font-size: 8px;  
+            margin-top: 2px;  
             color: #5a5c69;
         }
         
-        /* Header styling - smaller size */
+        
         .header {
             color: #2e59d9;
-            font-size: 1.1rem;  /* Further reduced from 1.2rem */
+            font-size: 1.1rem;  
             border-bottom: 1px solid #eee;
-            padding-bottom: 6px;  /* Further reduced padding */
-            margin-bottom: 10px;  /* Further reduced margin */
+            padding-bottom: 6px;  
+            margin-bottom: 10px;  
         }
         
-        /* Uniform chart containers with increased width */
+        
         .stPlotlyChart {
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             background: white;
-            padding: 10px;  /* Further reduced padding */
-            margin-bottom: 12px !important;  /* Further reduced margin */
-            height: 240px;  /* Slightly reduced height */
+            padding: 10px;  
+            margin-bottom: 12px !important;  
+            height: 240px;  
             width: 100% !important;
         }
         
-        /* Add consistent spacing between sections */
+        
         .block-container {
-            padding-top: 1rem;  /* Further reduced padding */
-            padding-bottom: 1rem;  /* Further reduced padding */
+            padding-top: 1rem;  
+            padding-bottom: 1rem;  
         }
         
-        /* Sidebar */
+        
         .stSidebar {
             background-color: #f8f9fa;
         }
@@ -109,33 +108,33 @@ def apply_custom_styles():
             background-color: #f8f9fa;
         }
         
-        /* Grid layout for uniform charts with increased spacing */
+        
         .chart-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 18px;  /* Slightly reduced gap */
-            margin-bottom: 10px;  /* Further reduced margin */
+            gap: 18px;  
+            margin-bottom: 10px;  
         }
         
-        /* Adjust column width for charts */
+        
         .st-emotion-cache-1v0mbdj {
             width: 100% !important;
         }
         
-        /* Individual view specific styling */
+        
         .individual-metrics {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;  /* Further reduced gap */
-            margin-bottom: 10px;  /* Further reduced margin */
+            gap: 8px;  
+            margin-bottom: 10px;  
         }
         
-        /* Reduce sidebar title size */
+        
         .sidebar .sidebar-content h1 {
-            font-size: 1.3rem !important;  /* Further reduced size */
+            font-size: 1.3rem !important;  
         }
         
-        /* Adjust column spacing */
+        
         .st-emotion-cache-1y4p8pa {
             padding-left: 1.2rem;
             padding-right: 1.2rem;
@@ -143,9 +142,9 @@ def apply_custom_styles():
     </style>
     """, unsafe_allow_html=True)
 
-# Performance gauge with accurate indicators
+# Performance gauge 
 def create_performance_gauge(value, title, target=100):
-    # Determine colors based on performance
+    
     if value >= target * 1.1:
         gauge_color = "#1cc88a"
         performance_text = "Exceeding Target"
@@ -193,14 +192,14 @@ def create_performance_gauge(value, title, target=100):
     
     return fig
 
-# Enhanced metric display with uniform sizing and proper monetary formatting
+
 def display_metric(title, current_value, prev_value=None, target=None, format_str=None, reverse_trend=False):
-    # Convert inputs to float if they aren't already
+    
     current_value = float(current_value) if current_value is not None else 0
     prev_value = float(prev_value) if prev_value is not None else None
     target = float(target) if target is not None else None
     
-    # Determine formatting based on value magnitude if no format string is provided
+    
     if format_str is None:
         if "REVENUE" in title.upper() or "$" in title.upper():
             if abs(current_value) >= 1000000:
@@ -268,13 +267,13 @@ def display_metric(title, current_value, prev_value=None, target=None, format_st
     </div>
     """, unsafe_allow_html=True)
 
-# Team revenue trend chart with cleaner indicators
+# Team revenue trend chart 
 def plot_team_revenue_trend(current_year, last_year, title):
-    # Prepare data
+    
     monthly_current = current_year.groupby('Month')['Total_Revenue'].sum().reset_index()
     monthly_last = last_year.groupby('Month')['Total_Revenue'].sum().reset_index()
     
-    # Ensure months are in correct order (Jan-Dec)
+    
     month_order = ['January', 'February', 'March', 'April', 'May', 'June', 
                    'July', 'August', 'September', 'October', 'November', 'December']
     
@@ -289,10 +288,10 @@ def plot_team_revenue_trend(current_year, last_year, title):
     merged['YoY_Change'] = ((merged['Total_Revenue_current'] - merged['Total_Revenue_last']) / 
                            merged['Total_Revenue_last']) * 100
     
-    # Create figure
+    
     fig = go.Figure()
     
-    # Add bars for current year
+    
     fig.add_trace(go.Bar(
         x=merged['Month'],
         y=merged['Total_Revenue_current'],
@@ -302,7 +301,7 @@ def plot_team_revenue_trend(current_year, last_year, title):
         hovertemplate='%{x}<br>Revenue: $%{y:,.0f}<extra></extra>'
     ))
     
-    # Add line for last year
+    
     fig.add_trace(go.Scatter(
         x=merged['Month'],
         y=merged['Total_Revenue_last'],
@@ -313,15 +312,15 @@ def plot_team_revenue_trend(current_year, last_year, title):
         hovertemplate='%{x}<br>Revenue: $%{y:,.0f}<extra></extra>'
     ))
     
-    # Add target line
-    target_value = 10000000  # Updated to $10M target
+    
+    target_value = 10000000  
     fig.add_hline(y=target_value, line_dash="dash", line_color="#f6c23e",
                  annotation_text=f"Monthly Target: ${target_value/1e6:.1f}M", 
                  annotation_position="bottom right")
     
-    # Add subtle YoY change indicators
+    
     for i, row in merged.iterrows():
-        if abs(row['YoY_Change']) > 5:  # Only show significant changes
+        if abs(row['YoY_Change']) > 5:  
             fig.add_annotation(
                 x=row['Month'],
                 y=row['Total_Revenue_current'],
@@ -344,9 +343,9 @@ def plot_team_revenue_trend(current_year, last_year, title):
     
     return fig
 
-# Team leaderboard comparison with proper dropdown and monetary formatting
+# Team leaderboard comparison 
 def plot_team_leaderboard(current_year, last_year, title):
-    # Prepare data
+    
     current = current_year.groupby('Team_Member')['Total_Revenue'].sum().reset_index()
     last = last_year.groupby('Team_Member')['Total_Revenue'].sum().reset_index()
     
@@ -354,28 +353,28 @@ def plot_team_leaderboard(current_year, last_year, title):
     merged['YoY_Change'] = ((merged['Total_Revenue_current'] - merged['Total_Revenue_last']) / 
                           (merged['Total_Revenue_last'] + 1e-6)) * 100  
     
-    # Sort by current revenue
+    
     merged = merged.sort_values('Total_Revenue_current', ascending=False)
     
-    # Create dropdown for team members
+    
     selected_member = st.selectbox(
         "Select Team Member",
         merged['Team_Member'].unique(),
         key="team_member_select"
     )
     
-    # Filter data for selected member
+    
     member_data = merged[merged['Team_Member'] == selected_member].iloc[0]
     
-    # Create two columns for the leaderboard display
+    
     col1, col2 = st.columns([3, 1])
     
     with col1:
-        # Display member name
+        
         st.markdown(f"**{member_data['Team_Member']}**")
         
     with col2:
-        # Display revenue in millions with proper formatting
+        
         revenue_millions = member_data['Total_Revenue_current'] / 1000000
         st.markdown(f"**${revenue_millions:,.1f}M**")
     
@@ -391,10 +390,10 @@ def plot_team_leaderboard(current_year, last_year, title):
     
     st.markdown("---")
     
-    # Create figure for the full team comparison
+    
     fig = go.Figure()
     
-    # Add current year bars with annotations
+    
     fig.add_trace(go.Bar(
         y=merged['Team_Member'],
         x=merged['Total_Revenue_current'],
@@ -406,7 +405,7 @@ def plot_team_leaderboard(current_year, last_year, title):
         hoverinfo='text'
     ))
     
-    # Add last year bars
+    
     fig.add_trace(go.Bar(
         y=merged['Team_Member'],
         x=merged['Total_Revenue_last'],
@@ -417,7 +416,7 @@ def plot_team_leaderboard(current_year, last_year, title):
         hoverinfo='x'
     ))
     
-    # Add annotations for YoY changes
+    
     for i, row in merged.iterrows():
         fig.add_annotation(
             x=max(row['Total_Revenue_current'], row['Total_Revenue_last']),
@@ -443,10 +442,10 @@ def plot_team_leaderboard(current_year, last_year, title):
 
 # Top products comparison with YoY indicators
 def plot_top_products_comparison(current_year, last_year, title, n=5):
-    # Get top products for current year
+    
     top_products = current_year.groupby('Product_Name')['Total_Revenue'].sum().nlargest(n).index
     
-    # Prepare data
+    
     current = current_year[current_year['Product_Name'].isin(top_products)]
     last = last_year[last_year['Product_Name'].isin(top_products)]
     
@@ -457,13 +456,13 @@ def plot_top_products_comparison(current_year, last_year, title, n=5):
     merged['YoY_Change'] = ((merged['Total_Revenue_current'] - merged['Total_Revenue_last']) / 
                            merged['Total_Revenue_last']) * 100
     
-    # Sort by current revenue
+    
     merged = merged.sort_values('Total_Revenue_current', ascending=False)
     
-    # Create figure
+    
     fig = go.Figure()
     
-    # Add current year bars with annotations
+    
     fig.add_trace(go.Bar(
         x=merged['Product_Name'],
         y=merged['Total_Revenue_current'],
@@ -474,7 +473,7 @@ def plot_top_products_comparison(current_year, last_year, title, n=5):
         hoverinfo='text'
     ))
     
-    # Add last year bars
+    
     fig.add_trace(go.Bar(
         x=merged['Product_Name'],
         y=merged['Total_Revenue_last'],
@@ -484,7 +483,7 @@ def plot_top_products_comparison(current_year, last_year, title, n=5):
         hoverinfo='y'
     ))
     
-    # Add annotations for YoY changes
+    
     for i, row in merged.iterrows():
         fig.add_annotation(
             x=row['Product_Name'],
@@ -510,7 +509,7 @@ def plot_top_products_comparison(current_year, last_year, title, n=5):
 
 # Channel revenue breakdown with YoY comparison
 def plot_channel_revenue(current_year, last_year, title):
-    # Prepare data
+    
     current = current_year.groupby('Sales_Channel')['Total_Revenue'].sum().reset_index()
     last = last_year.groupby('Sales_Channel')['Total_Revenue'].sum().reset_index()
     
@@ -518,13 +517,13 @@ def plot_channel_revenue(current_year, last_year, title):
     merged['YoY_Change'] = ((merged['Total_Revenue_current'] - merged['Total_Revenue_last']) / 
                           merged['Total_Revenue_last']) * 100
     
-    # Sort by current revenue
+    
     merged = merged.sort_values('Total_Revenue_current', ascending=False)
     
-    # Create figure
+    
     fig = go.Figure()
     
-    # Add current year bars with annotations
+    
     fig.add_trace(go.Bar(
         x=merged['Sales_Channel'],
         y=merged['Total_Revenue_current'],
@@ -535,7 +534,7 @@ def plot_channel_revenue(current_year, last_year, title):
         hoverinfo='text'
     ))
     
-    # Add last year bars
+    
     fig.add_trace(go.Bar(
         x=merged['Sales_Channel'],
         y=merged['Total_Revenue_last'],
@@ -545,7 +544,7 @@ def plot_channel_revenue(current_year, last_year, title):
         hoverinfo='y'
     ))
     
-    # Add annotations for YoY changes
+    
     for i, row in merged.iterrows():
         fig.add_annotation(
             x=row['Sales_Channel'],
@@ -569,13 +568,13 @@ def plot_channel_revenue(current_year, last_year, title):
     
     return fig
 
-# Individual revenue trend vs target with cleaner indicators
+# Individual revenue trend vs target 
 def plot_individual_trend(current_year, last_year, title, target=5000000):
-    # Prepare data
+    
     monthly_current = current_year.groupby('Month')['Total_Revenue'].sum().reset_index()
     monthly_last = last_year.groupby('Month')['Total_Revenue'].sum().reset_index()
     
-    # Ensure months are in correct order (Jan-Dec)
+    
     month_order = ['January', 'February', 'March', 'April', 'May', 'June', 
                    'July', 'August', 'September', 'October', 'November', 'December']
     
@@ -585,15 +584,15 @@ def plot_individual_trend(current_year, last_year, title, target=5000000):
     monthly_current = monthly_current.sort_values('Month')
     monthly_last = monthly_last.sort_values('Month')
     
-    # Calculate YoY change
+    
     merged = monthly_current.merge(monthly_last, on='Month', suffixes=('_current', '_last'))
     merged['YoY_Change'] = ((merged['Total_Revenue_current'] - merged['Total_Revenue_last']) / 
                            merged['Total_Revenue_last']) * 100
     
-    # Create figure
+    
     fig = go.Figure()
     
-    # Add bars for current year
+    
     fig.add_trace(go.Bar(
         x=merged['Month'],
         y=merged['Total_Revenue_current'],
@@ -603,7 +602,7 @@ def plot_individual_trend(current_year, last_year, title, target=5000000):
         hovertemplate='%{x}<br>Revenue: $%{y:,.0f}<extra></extra>'
     ))
     
-    # Add line for last year
+    
     fig.add_trace(go.Scatter(
         x=merged['Month'],
         y=merged['Total_Revenue_last'],
@@ -614,14 +613,14 @@ def plot_individual_trend(current_year, last_year, title, target=5000000):
         hovertemplate='%{x}<br>Revenue: $%{y:,.0f}<extra></extra>'
     ))
     
-    # Add target line
+    
     fig.add_hline(y=target, line_dash="dash", line_color="#f6c23e",
                  annotation_text=f"Monthly Target: ${target/1e6:.1f}M", 
                  annotation_position="bottom right")
     
-    # Add subtle YoY change indicators
+    
     for i, row in merged.iterrows():
-        if abs(row['YoY_Change']) > 5:  # Only show significant changes
+        if abs(row['YoY_Change']) > 5:  
             fig.add_annotation(
                 x=row['Month'],
                 y=row['Total_Revenue_current'],
@@ -646,7 +645,7 @@ def plot_individual_trend(current_year, last_year, title, target=5000000):
 
 # Individual top products
 def plot_individual_products(current_year, last_year, title):
-    # Prepare data
+    
     current = current_year.groupby('Product_Name')['Total_Revenue'].sum().reset_index()
     last = last_year.groupby('Product_Name')['Total_Revenue'].sum().reset_index()
     
@@ -654,13 +653,13 @@ def plot_individual_products(current_year, last_year, title):
     merged['YoY_Change'] = ((merged['Total_Revenue_current'] - merged['Total_Revenue_last']) / 
                           (merged['Total_Revenue_last'] + 1e-6)) * 100  
     
-    # Sort by current revenue
+    
     merged = merged.sort_values('Total_Revenue_current', ascending=False).head(5)
     
-    # Create figure
+    
     fig = go.Figure()
     
-    # Add current year bars with annotations
+    
     fig.add_trace(go.Bar(
         x=merged['Product_Name'],
         y=merged['Total_Revenue_current'],
@@ -671,7 +670,7 @@ def plot_individual_products(current_year, last_year, title):
         hoverinfo='text'
     ))
     
-    # Add last year bars
+    
     fig.add_trace(go.Bar(
         x=merged['Product_Name'],
         y=merged['Total_Revenue_last'],
@@ -681,7 +680,7 @@ def plot_individual_products(current_year, last_year, title):
         hoverinfo='y'
     ))
     
-    # Add annotations for YoY changes
+    
     for i, row in merged.iterrows():
         fig.add_annotation(
             x=row['Product_Name'],
@@ -707,7 +706,7 @@ def plot_individual_products(current_year, last_year, title):
 
 # Individual channel performance
 def plot_individual_channels(current_year, last_year, title):
-    # Prepare data
+    
     current = current_year.groupby('Sales_Channel')['Total_Revenue'].sum().reset_index()
     last = last_year.groupby('Sales_Channel')['Total_Revenue'].sum().reset_index()
     
@@ -715,13 +714,13 @@ def plot_individual_channels(current_year, last_year, title):
     merged['YoY_Change'] = ((merged['Total_Revenue_current'] - merged['Total_Revenue_last']) / 
                           (merged['Total_Revenue_last'] + 1e-6)) * 100  
     
-    # Sort by current revenue
+    
     merged = merged.sort_values('Total_Revenue_current', ascending=False)
     
-    # Create figure
+    
     fig = go.Figure()
     
-    # Add current year bars with annotations
+    
     fig.add_trace(go.Bar(
         x=merged['Sales_Channel'],
         y=merged['Total_Revenue_current'],
@@ -732,7 +731,7 @@ def plot_individual_channels(current_year, last_year, title):
         hoverinfo='text'
     ))
     
-    # Add last year bars
+    
     fig.add_trace(go.Bar(
         x=merged['Sales_Channel'],
         y=merged['Total_Revenue_last'],
@@ -742,7 +741,7 @@ def plot_individual_channels(current_year, last_year, title):
         hoverinfo='y'
     ))
     
-    # Add annotations for YoY changes
+    
     for i, row in merged.iterrows():
         fig.add_annotation(
             x=row['Sales_Channel'],
@@ -768,7 +767,7 @@ def plot_individual_channels(current_year, last_year, title):
 
 # Sales by location geo chart
 def plot_sales_by_location(current_year, title):
-    # Prepare data
+    
     location_data = current_year.groupby('Country')['Total_Revenue'].sum().reset_index()
     
     fig = px.choropleth(
@@ -796,17 +795,17 @@ def plot_sales_by_location(current_year, title):
 
 # Individual performance comparison chart
 def plot_individual_comparison(current_year, last_year, title):
-    # Calculate total revenue for current and last year
+    
     rev_c = current_year["Total_Revenue"].sum() if not current_year.empty else 0
     rev_l = last_year["Total_Revenue"].sum() if not last_year.empty else 0
     
-    # Calculate YoY change
+    
     yoy_change = ((rev_c - rev_l) / rev_l * 100) if rev_l != 0 else 0
     
-    # Create figure
+    
     fig = go.Figure()
     
-    # Add current year performance
+    
     fig.add_trace(go.Bar(
         x=['Current Year'],
         y=[rev_c],
@@ -816,7 +815,7 @@ def plot_individual_comparison(current_year, last_year, title):
         textposition='auto'
     ))
     
-    # Add last year performance
+    
     fig.add_trace(go.Bar(
         x=['Last Year'],
         y=[rev_l],
@@ -826,7 +825,7 @@ def plot_individual_comparison(current_year, last_year, title):
         textposition='auto'
     ))
     
-    # Add YoY change annotation
+    
     fig.add_annotation(
         x=0.5,
         y=max(rev_c, rev_l),
@@ -847,41 +846,41 @@ def plot_individual_comparison(current_year, last_year, title):
     return fig
 
 # Load data from CSV file
-@st.cache_data(ttl=3600)  # Cache for 1 hour
+@st.cache_data(ttl=3600)  
 def load_data(file_path):
     try:
-        # Load data from CSV file
+        
         df = pd.read_csv(file_path)
         
-        # Convert date column to datetime
+        
         df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
         
-        # Create year and month columns for analysis
+        
         df['Year'] = df['Date'].dt.year
         df['Month'] = df['Date'].dt.month_name()
         df['Month_Num'] = df['Date'].dt.month
         
-        # Clean up column names (remove spaces)
+        
         df.columns = [col.strip().replace(' ', '_') for col in df.columns]
         
-        # Convert relevant columns to numeric if needed
+        
         numeric_cols = ['Quantity_Sold', 'Unit_Price', 'Total_Revenue', 'CSAT', 'NPS']
         for col in numeric_cols:
             if col in df.columns:
                 df[col] = pd.to_numeric(df[col], errors='coerce')
         
-        # Clean team names if needed
+        
         if 'Team' in df.columns:
             df['Team'] = df['Team'].str.replace('Team ', '')
         
-        # Clean sales channel names
+        
         if 'Sales_Channel' in df.columns:
             df['Sales_Channel'] = df['Sales_Channel'].str.strip()
         
         return df
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")
-        return pd.DataFrame()  # Return empty DataFrame if error occurs
+        return pd.DataFrame()  
 
 # Check login state
 if 'logged_in' not in st.session_state:
@@ -892,13 +891,13 @@ if not st.session_state.logged_in:
     login_page()
     st.stop()
 
-# Apply custom styles
+
 apply_custom_styles()
 
-# Main dashboard
+
 df = load_data("final_cleaned_dataset.csv")
 
-# Check if data loaded successfully
+
 if df.empty:
     st.error("No data available. Please check your data file.")
     st.stop()
@@ -908,7 +907,7 @@ with st.sidebar:
     st.title("📊 AI SALES DASHBOARD")
     st.markdown("---")
     
-    # View mode selector
+    
     st.markdown("**DASHBOARD VIEW**")
     view_mode = st.radio(
         "Select view mode:",
@@ -956,7 +955,7 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Advanced filters in expander
+    
     with st.expander("🔍 FILTER OPTIONS", expanded=False):
         if 'Country' in df.columns:
             countries = st.multiselect(
@@ -1042,7 +1041,7 @@ last_year = filtered_df[filtered_df["Year"] == (filtered_df["Year"].max() - 1)]
 if st.session_state.view_mode == "Team":
     st.markdown(f"## <span class='header'>🏆 TEAM PERFORMANCE: {selected_team}</span>", unsafe_allow_html=True)
     
-    # Key Metrics Row - First line with 4 metrics
+    # Key Metrics Row 
     cols = st.columns(4)
     
     with cols[0]:
@@ -1057,7 +1056,7 @@ if st.session_state.view_mode == "Team":
         display_metric("UNITS SOLD", qty_c, qty_l, format_str="{:,.0f}")
     
     with cols[2]:
-        # Revenue metric without target
+        # Revenue metric 
         rev_c = current_year["Total_Revenue"].sum() if not current_year.empty else 0
         rev_l = last_year["Total_Revenue"].sum() if not last_year.empty else 0
         display_metric("TOTAL REVENUE", rev_c, rev_l, None, "${:,.1f}M")
@@ -1068,14 +1067,14 @@ if st.session_state.view_mode == "Team":
         csat_l = last_year["CSAT"].mean() if not last_year.empty and not last_year["CSAT"].isnull().all() else 0
         display_metric("AVG CUSTOMER SATISFACTION", csat_c, csat_l, None, "{:.1f}/10", True)
     
-    # Team Leaderboard in an expander - now collapsed by default
+    # Team Leaderboard 
     with st.expander("📊 View Team Leaderboard", expanded=False):
         st.plotly_chart(
             plot_team_leaderboard(current_year, last_year, "TEAM MEMBER PERFORMANCE (YoY)"),
             use_container_width=True
         )
     
-    # Second row with 2 columns (2 charts)
+    # Second row 
     cols = st.columns(2)
     
     with cols[0]:
@@ -1092,7 +1091,7 @@ if st.session_state.view_mode == "Team":
                 use_container_width=True
             )
     
-    # Third row with 3 columns (2 charts + gauge)
+    # Third row 
     cols = st.columns([2, 2, 1])
     
     with cols[0]:
@@ -1110,7 +1109,7 @@ if st.session_state.view_mode == "Team":
             )
     
     with cols[2]:
-        # Performance gauge now in third row
+        
         performance_score = min(150, rev_c / 10000000) if rev_c else 0  
         st.plotly_chart(
             create_performance_gauge(performance_score, "TEAM PERFORMANCE", 100),
@@ -1121,7 +1120,7 @@ if st.session_state.view_mode == "Team":
 else:
     st.markdown(f"## <span class='header'>👤 INDIVIDUAL PERFORMANCE: {selected_member}</span>", unsafe_allow_html=True)
     
-    # Calculate additional metrics for individual view
+    
     rev_c = current_year["Total_Revenue"].sum() if not current_year.empty else 0
     rev_l = last_year["Total_Revenue"].sum() if not last_year.empty else 0
     csat_c = current_year["CSAT"].mean() if not current_year.empty and not current_year["CSAT"].isnull().all() else 0
@@ -1131,11 +1130,11 @@ else:
     qty_c = current_year["Quantity_Sold"].sum() if not current_year.empty else 0
     qty_l = last_year["Quantity_Sold"].sum() if not last_year.empty else 0
     
-    # Key Metrics Row - Uniform layout with 4 metrics
+    # Key Metrics Row 
     cols = st.columns(4)
     
     with cols[0]:
-        # Revenue metric without target (target will be in trend chart)
+        # Revenue metric 
         display_metric("TOTAL REVENUE", rev_c, rev_l, None, "${:,.1f}M")  
 
     with cols[1]:
@@ -1150,7 +1149,7 @@ else:
         # CSAT metric
         display_metric("AVG CUSTOMER SATISFACTION", csat_c, csat_l, None, "{:.1f}/10", True)
     
-    # Second row with 2 columns (2 charts)
+    # Second row 
     cols = st.columns(2)
     
     with cols[0]:
@@ -1167,7 +1166,7 @@ else:
                 use_container_width=True
             )
     
-    # Third row with 3 columns (2 charts + gauge)
+    # Third row 
     cols = st.columns([2, 2, 1])
     
     with cols[0]:
@@ -1185,9 +1184,9 @@ else:
             )
     
     with cols[2]:
-        # Performance gauge - now based on YoY change
+        # Performance gauge 
         yoy_change = ((rev_c - rev_l) / rev_l) * 100 if rev_l != 0 else 0
-        performance_score = min(150, 100 + yoy_change)  # Base 100 with YoY change
+        performance_score = min(150, 100 + yoy_change)  
         st.plotly_chart(
             create_performance_gauge(performance_score, "PERSONAL PERFORMANCE", 100),
             use_container_width=True
